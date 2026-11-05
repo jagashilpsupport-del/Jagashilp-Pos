@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jagaslip Orders</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--red:#c8102e;--red-d:#9d0c24;--bg:#fff;--card:#fff;--soft:#fdf0f2;--text:#1d1d1f;--muted:#6b6b72;--line:#eadadd;--on-red:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--red:#e5334f;--red-d:#c8102e;--bg:#141214;--card:#1e1a1c;--soft:#2a1c20;--text:#f4eeef;--muted:#a79ca0;--line:#3a2c30}}
+:root[data-theme="dark"]{--red:#e5334f;--red-d:#c8102e;--bg:#141214;--card:#1e1a1c;--soft:#2a1c20;--text:#f4eeef;--muted:#a79ca0;--line:#3a2c30}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:90px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--red);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--red);color:var(--on-red);text-align:center;padding:14px 12px 0}
+header h1{margin:0;font-size:22px;letter-spacing:1px}
+header p{margin:2px 0 10px;font-size:12px;opacity:.85}
+.tabs{display:flex;max-width:600px;margin:0 auto}
+.tab{flex:1;border:0;background:transparent;color:var(--on-red);opacity:.7;font-size:15px;font-weight:600;padding:12px 0;border-bottom:3px solid transparent;cursor:pointer}
+.tab.on{opacity:1;border-bottom-color:var(--on-red)}
+main{max-width:600px;margin:0 auto;padding:14px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--red);margin:18px 0 8px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;user-select:none}
+.item.sel{border-color:var(--red);background:var(--soft)}
+.item .n{font-weight:600;font-size:15px}
+.item .p{color:var(--red);font-weight:700;margin-top:2px}
+.add{color:var(--red);font-weight:700;font-size:13px;border:1.5px solid var(--red);border-radius:8px;padding:6px 14px}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:36px;height:36px;border-radius:50%;border:0;background:var(--red);color:var(--on-red);font-size:20px;font-weight:700;cursor:pointer}
+.qty span{min-width:26px;text-align:center;font-weight:700}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:none}
+.bar.show{display:block}
+.bar .in{max-width:600px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.btn{border:0;background:var(--red);color:var(--on-red);font-weight:700;font-size:15px;padding:12px 22px;border-radius:10px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--red);border:1.5px solid var(--red)}
+.tot{font-weight:700}
+.tot small{display:block;color:var(--muted);font-weight:500}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;display:none;align-items:flex-end;justify-content:center}
+.modal.show{display:flex}
+.sheet{background:var(--card);width:100%;max-width:600px;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto}
+.sheet h3{margin:0 0 10px;color:var(--red)}
+.line{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+label{display:block;font-size:13px;color:var(--muted);margin:12px 0 4px}
+input,textarea{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-size:16px;background:var(--bg);color:var(--text);font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:var(--red)}
+.row{display:flex;gap:10px;margin-top:16px}
+.row .btn{flex:1}
+.order{background:var(--card);border:1.5px solid var(--line);border-left:5px solid var(--red);border-radius:12px;padding:14px;margin-bottom:12px}
+.order .top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.order .who{font-weight:700;font-size:16px;margin-top:4px}
+.order .ph{color:var(--red);font-weight:600;text-decoration:none}
+.order .rem{background:var(--soft);border-radius:8px;padding:8px;font-size:13px;margin:8px 0}
+.order .t{display:flex;justify-content:space-between;font-weight:700;margin-top:8px}
+.order .del{background:none;border:0;color:var(--muted);font-size:12px;cursor:pointer;padding:6px 0}
+.empty{text-align:center;color:var(--muted);padding:50px 10px}
+.pill{background:var(--on-red);color:var(--red);border-radius:10px;font-size:11px;padding:1px 7px;margin-left:4px}
+.hide{display:none}
+button{font-family:inherit}
+</style>
+</head>
+<body>
+<header>
+<h1>JAGASHILP</h1>
+<p>Handpainted &amp; Personalized Gifts</p>
+<div class="tabs">
+<button class="tab on" id="t1" onclick="show(1)">New Order</button>
+<button class="tab" id="t2" onclick="show(2)">Orders<span class="pill" id="cnt">0</span></button>
+</div>
+</header>
+<main>
+<section id="v1"></section>
+<section id="v2" class="hide"></section>
+</main>
+<div class="bar" id="bar"><div class="in">
+<div class="tot"><span id="bq"></span><small id="bt"></small></div>
+<button class="btn" onclick="openM()">Place Order</button></div></div>
+<div class="modal" id="m"><div class="sheet">
+<h3>Order Details</h3>
+<div id="sum"></div>
+<label>Name</label><input id="nm" placeholder="Customer name">
+<label>Phone Number</label><input id="ph" type="tel" inputmode="numeric" maxlength="10" placeholder="10 digit number">
+<label>Remark</label><textarea id="rm" rows="2" placeholder="Any note (optional)"></textarea>
+<div class="row"><button class="btn ghost" onclick="closeM()">Cancel</button><button class="btn" onclick="place()">Place</button></div>
+</div></div>
+<script>
+var P=[
+{g:"Keychains",id:1,n:"Ready to sell keychains",p:99},
+{g:"Fridge Magnets",id:2,n:"Photo fridge magnets",p:149},
+{g:"Fridge Magnets",id:3,n:"Handpainted fridge magnets",p:349},
+{g:"Handpainted Portraits",id:4,n:"4 by 4 canvas",p:349},
+{g:"Handpainted Portraits",id:5,n:"5 by 7 canvas",p:799},
+{g:"Handpainted Portraits",id:6,n:"8 by 10 canvas",p:999},
+{g:"Handpainted Portraits",id:7,n:"A4 frame",p:999},
+{g:"Personalized",id:8,n:"Personalized mugs",p:249},
+{g:"Personalized",id:9,n:"Personalized mouse pads",p:149}
+];
+var cart={},orders=[];
+try{orders=JSON.parse(localStorage.getItem("jg_orders")||"[]")}catch(e){orders=[]}
+function save(){try{localStorage.setItem("jg_orders",JSON.stringify(orders))}catch(e){}}
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function find(id){return P.filter(function(x){return x.id==id})[0]}
+function renderP(){
+var h="",g="";
+P.forEach(function(x){
+if(x.g!=g){g=x.g;h+="<h2>"+g+"</h2>"}
+var q=cart[x.id]||0;
+h+='<div class="item'+(q?" sel":"")+'" onclick="chg('+x.id+',1)"><div><div class="n">'+x.n+'</div><div class="p">₹'+x.p+'</div></div>'+
+(q?'<div class="qty" onclick="event.stopPropagation()"><button onclick="chg('+x.id+',-1)">−</button><span>'+q+'</span><button onclick="chg('+x.id+',1)">+</button></div>':'<div class="add">+ ADD</div>')+'</div>'
+});
+document.getElementById("v1").innerHTML=h;
+var n=0,t=0;
+for(var k in cart){n+=cart[k];t+=cart[k]*find(k).p}
+document.getElementById("bar").className="bar"+(n?" show":"");
+document.getElementById("bq").textContent=n+(n>1?" items":" item");
+document.getElementById("bt").textContent="Total ₹"+t;
+}
+function chg(id,d){
+cart[id]=(cart[id]||0)+d;
+if(cart[id]<=0)delete cart[id];
+renderP();
+}
+function total(){var t=0;for(var k in cart)t+=cart[k]*find(k).p;return t}
+function openM(){
+var h="";
+for(var k in cart){var x=find(k);h+='<div class="line"><span>'+x.n+' × '+cart[k]+'</span><span>₹'+(x.p*cart[k])+'</span></div>'}
+h+='<div class="line"><b>Total</b><b>₹'+total()+'</b></div>';
+document.getElementById("sum").innerHTML=h;
+document.getElementById("m").className="modal show";
+}
+function closeM(){document.getElementById("m").className="modal"}
+function place(){
+var nm=document.getElementById("nm").value.trim(),ph=document.getElementById("ph").value.trim(),rm=document.getElementById("rm").value.trim();
+if(!nm){alert("Please enter the name");return}
+if(!/^\d{10}$/.test(ph)){alert("Please enter a 10-digit phone number");return}
+var items=[];
+for(var k in cart){var x=find(k);items.push({n:x.n,q:cart[k],p:x.p})}
+var no=orders.length?orders[0].no+1:1;
+orders.unshift({no:no,time:new Date().toLocaleString("en-IN",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}),nm:nm,ph:ph,rm:rm,items:items,total:total()});
+save();cart={};
+["nm","ph","rm"].forEach(function(i){document.getElementById(i).value=""});
+closeM();renderP();renderO();show(2);
+}
+function renderO(){
+document.getElementById("cnt").textContent=orders.length;
+var el=document.getElementById("v2");
+if(!orders.length){el.innerHTML='<div class="empty">No orders yet</div>';return}
+var h="";
+orders.forEach(function(o,i){
+h+='<div class="order"><div class="top"><span>Order #'+o.no+'</span><span>'+esc(o.time)+'</span></div>'+
+'<div class="who">'+esc(o.nm)+'</div><a class="ph" href="tel:'+esc(o.ph)+'">'+esc(o.ph)+'</a>';
+if(o.rm)h+='<div class="rem">'+esc(o.rm)+'</div>';
+o.items.forEach(function(x){h+='<div class="line"><span>'+esc(x.n)+' × '+x.q+'</span><span>₹'+(x.p*x.q)+'</span></div>'});
+h+='<div class="t"><span>Total</span><span>₹'+o.total+'</span></div><button class="del" onclick="delO('+i+')">Delete order</button></div>';
+});
+el.innerHTML=h;
+}
+function delO(i){if(confirm("Delete this order?")){orders.splice(i,1);save();renderO()}}
+function show(n){
+document.getElementById("v1").className=n==1?"":"hide";
+document.getElementById("v2").className=n==2?"":"hide";
+document.getElementById("t1").className="tab"+(n==1?" on":"");
+document.getElementById("t2").className="tab"+(n==2?" on":"");
+if(n==2)document.getElementById("bar").className="bar";else renderP();
+window.scrollTo(0,0);
+}
+renderP();renderO();
+</script>
+</body>
+</html>
