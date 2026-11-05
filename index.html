@@ -140,7 +140,18 @@ var no=orders.length?orders[0].no+1:1;
 orders.unshift({no:no,time:new Date().toLocaleString("en-IN",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}),nm:nm,ph:ph,rm:rm,items:items,total:total()});
 save();cart={};
 ["nm","ph","rm"].forEach(function(i){document.getElementById(i).value=""});
-closeM();renderP();renderO();show(2);
+closeM();renderP();renderO();show(2);sendWA(orders[0]);
+}
+var WA_NUMBER="";
+function sendWA(o){
+var m="*New Order #"+o.no+"* - Jagashilp\n"+o.time+"\nName: "+o.nm+"\nPhone: "+o.ph;
+if(o.rm)m+="\nRemark: "+o.rm;
+m+="\n\n";
+o.items.forEach(function(x){m+=x.n+" x "+x.q+" = ₹"+(x.p*x.q)+"\n"});
+m+="\n*Total: ₹"+o.total+"*";
+var u="https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(m);
+var w=window.open(u,"_blank");
+if(!w)location.href=u;
 }
 function renderO(){
 document.getElementById("cnt").textContent=orders.length;
